@@ -366,7 +366,7 @@ int main(int argc, char *argv[])
         else if (start == false&&gameover==true&&do_text==0)
         {     
                  check_high_score();
-                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); 
                 SDL_RenderClear(renderer);
                 drawText("GAME OVER", "zebulon/Zebulon Bold Italic.otf", 220, 100, 100, {255, 0, 0});
                 drawText("SCORE : ", "font/GothamMedium.ttf", 400, 250, 65, {255, 255, 255});
