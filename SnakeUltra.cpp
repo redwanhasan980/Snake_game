@@ -2,12 +2,13 @@
 #include <bits/stdc++.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include<SDL2/SDL_mixer.h>
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
 #include <SDL2/SDL_image.h>
 using namespace std;
-
+//-----vvvaaaarrriiaaaabbllleesssss-----
 int SCREEN_WIDTH = 1280;
 int SCREEN_HEIGHT = 720;
 bool is_collision = false;
@@ -46,7 +47,7 @@ struct SnakeSegment {
     Direction direction;
     vector<SnakeSegment> snake;
     SnakeSegment food;
-
+///-------mmmaaaakkkkkinnnnng fooooooooooooood----------
 void makeFood() {
   
     food.x =rand() % cell_num;
@@ -54,6 +55,8 @@ void makeFood() {
     while( food.y<=1)
      food.y =rand() % 27;
 }
+
+// initialization----------------------
 bool initializeWindow(void)
 {
  
@@ -89,6 +92,22 @@ bool initializeWindow(void)
              << "SDL Error: " << SDL_GetError();
         return false;
     }
+     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+       cout << "SDL_mixer could not initialize! SDL_mixer Error: " << Mix_GetError() << endl;
+        SDL_Quit();
+        return false;
+    }
+
+     Mix_Chunk *sound = Mix_LoadWAV("music/opening.wav");
+    if (sound == nullptr) {
+       std::cerr << "Failed to load sound file! SDL_mixer Error: " << Mix_GetError() << std::endl;
+        Mix_CloseAudio();
+        SDL_Quit();
+        return false;
+    }
+     Mix_PlayChannel(1, sound, 0);
+      Mix_Pause(1);
+
        direction = RIGHT;
       snake.push_back({ 0, 14});
       snake.push_back({ -1, 14});
@@ -97,6 +116,10 @@ bool initializeWindow(void)
     SDL_RenderClear(renderer);
     return true;
 }
+
+//////// drawing tttteeeeeeeexxxtttttt---------
+
+
 void drawText(char s[], char ss[], int x, int y, int size, SDL_Color textColor)
 {
     
@@ -121,6 +144,8 @@ void drawText(char s[], char ss[], int x, int y, int size, SDL_Color textColor)
     SDL_FreeSurface(textSurface);
     SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
 }
+
+///////taaaakkkiiiinnngggggg   inpppuuuuttttttt-----
 
 void input(void)
 { if(event_time<=2)
@@ -159,6 +184,7 @@ void input(void)
             {
                     start = true,do_text=0;
                     first=1;
+                   Mix_Pause(1);
             }
                 
              else if (SDLK_r == event.key.keysym.sym)
@@ -187,6 +213,8 @@ void input(void)
     }
 }
 
+////measure collllisionnnnnn------
+
 bool measure_collision() {
     for (int i = 1; i < snake.size(); ++i) {
         if (snake[i].x == snake[0].x && snake[i].y == snake[0].y) {
@@ -195,6 +223,10 @@ bool measure_collision() {
     }
     return false;
 }
+
+
+/// //update snake --------
+
 void update_snake() {
 
     SnakeSegment newHead = snake.front();
@@ -239,6 +271,8 @@ void update_snake() {
     }
 }
 
+// clear the renderer 
+
 void clear_renderer(int x,int y,int w,int h)
 {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -246,6 +280,8 @@ void clear_renderer(int x,int y,int w,int h)
     SDL_RenderFillRect(renderer, &Rect);
     SDL_RenderPresent(renderer);
 }
+
+// render--------
 void render() {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   clear_renderer(0,48,1285,725);
@@ -270,7 +306,7 @@ void render() {
      
     SDL_RenderPresent(renderer);
 }
-
+// calculation of score
 void calcscore()
 {
     int temp,i;
@@ -336,7 +372,7 @@ int main(int argc, char *argv[])
 
    
       if (first == 0 && start == false&&do_text==0)
-        {
+        {     Mix_Resume(1);
               check_high_score();
               calchighscore();
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
