@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Load background image
-    SDL_Surface* backgroundSurface = IMG_Load("image/snake_sasuke.jpg");  // Replace "background.jpg" with your image file
+    SDL_Surface* backgroundSurface = IMG_Load("image/sn.jpg");  // Replace "background.jpg" with your image file
     if (!backgroundSurface) {
         std::cerr << "Failed to load background image! SDL_image Error: " << IMG_GetError() << std::endl;
         IMG_Quit();

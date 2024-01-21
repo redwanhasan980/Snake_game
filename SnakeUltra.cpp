@@ -27,6 +27,7 @@ SDL_Texture *textTexture;
 TTF_Font *font;
   SDL_Surface *textSurface;
    SDL_Rect textRect;
+   SDL_Rect imgRect;
     fstream inputFile("highest_score.txt");
   
    bool maingame=false;
@@ -107,7 +108,13 @@ bool initializeWindow(void)
     }
      Mix_PlayChannel(1, sound, 0);
       Mix_Pause(1);
-
+   int imgFlags = IMG_INIT_PNG;
+    if ((IMG_Init(imgFlags) & imgFlags) != imgFlags) {
+        std::cerr << "SDL_image could not initialize! SDL_image Error: " << IMG_GetError() << std::endl;
+      
+        return false;
+    }
+   
        direction = RIGHT;
       snake.push_back({ 0, 14});
       snake.push_back({ -1, 14});
@@ -115,6 +122,19 @@ bool initializeWindow(void)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     return true;
+}
+
+///image load----------
+void img(char img_path[],int x,int y,int w,int h)
+{
+  SDL_Surface* imgSurface = IMG_Load(img_path);
+  SDL_Texture* imgTexture = SDL_CreateTextureFromSurface(renderer,imgSurface);
+       imgRect.x = x;
+    imgRect.y = y;
+    imgRect.w = w;
+    imgRect.h = h; 
+              SDL_FreeSurface(imgSurface);
+                SDL_RenderCopy(renderer, imgTexture, NULL, &imgRect);
 }
 
 //////// drawing tttteeeeeeeexxxtttttt---------
@@ -185,6 +205,10 @@ void input(void)
                     start = true,do_text=0;
                     first=1;
                    Mix_Pause(1);
+                   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+            SDL_RenderClear(renderer);
+            SDL_RenderPresent(renderer);
+
             }
                 
              else if (SDLK_r == event.key.keysym.sym)
@@ -375,15 +399,17 @@ int main(int argc, char *argv[])
         {     Mix_Resume(1);
               check_high_score();
               calchighscore();
+              
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderClear(renderer);
-            drawText("SNAKE PRO", "zebulon/Zebulon Bold Italic.otf", 220, 80, 90, {255, 0, 0});
-        drawText("HIGH SCORE : ", "font/GothamMedium.ttf", 300, 240, 65, {255, 255, 255});
-             drawText(high_scores, "zebulon/Zebulon Bold Italic.otf", 780, 220, 80, {255, 0, 0});
-            drawText("To Start press F", "font/GothamMedium.ttf", 400, 350, 50, {255, 255, 255});
-            drawText("To Quit press ESC", "font/GothamMedium.ttf", 400, 450, 50, {255, 255, 255});
-            drawText("REDO GAMING", "font/SerpentineBoldItalic.ttf", 800, 600, 40, {255, 0, 0});
-            drawText("©2023 REDO GAMING. All rights reserved.", "font/GothamMedium.ttf", 800, 650, 15, {255, 255, 255});
+            img("image/snake_sasuke.jpg",0,0,1280,720);
+            drawText("SNAKE PRO", "zebulon/Zebulon Bold Italic.otf", 50, 80, 90, {255, 0, 0});
+        drawText("HIGH SCORE : ", "font/SpaceMission.otf", 150, 240, 75, {255, 255, 255});
+             drawText(high_scores, "zebulon/Zebulon Bold Italic.otf", 680, 220, 80, {255, 0, 0});
+            drawText("To Start press F", "font/GothamMedium.ttf", 380, 350, 50, {255, 255, 255});
+            drawText("To Quit press ESC", "font/GothamMedium.ttf", 320, 450, 50, {255, 255, 255});
+            drawText("REDO GAMING", "font/SerpentineBoldItalic.ttf", 50, 600, 40, {255, 0, 0});
+            drawText("©2023 REDO GAMING. All rights reserved.", "font/GothamMedium.ttf", 50, 650, 15, {255, 255, 255});
             SDL_RenderPresent(renderer);
             do_text=1;
            
