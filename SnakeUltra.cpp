@@ -99,7 +99,7 @@ bool initializeWindow(void)
         return false;
     }
 
-     Mix_Chunk *sound = Mix_LoadWAV("music/opening.wav");
+     Mix_Chunk *sound = Mix_LoadWAV("music/intro.wav");
     if (sound == nullptr) {
        std::cerr << "Failed to load sound file! SDL_mixer Error: " << Mix_GetError() << std::endl;
         Mix_CloseAudio();
