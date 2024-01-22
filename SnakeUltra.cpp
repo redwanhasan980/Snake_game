@@ -135,6 +135,7 @@ void img(char img_path[],int x,int y,int w,int h)
     imgRect.h = h; 
               SDL_FreeSurface(imgSurface);
                 SDL_RenderCopy(renderer, imgTexture, NULL, &imgRect);
+                SDL_DestroyTexture(imgTexture);
 }
 
 //////// drawing tttteeeeeeeexxxtttttt---------
@@ -297,9 +298,9 @@ void update_snake() {
 
 // clear the renderer 
 
-void clear_renderer(int x,int y,int w,int h)
+void clear_renderer(int x,int y,int w,int h,int r,int g,int b)
 {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_SetRenderDrawColor(renderer, r, g, b, 255);
      SDL_Rect Rect = { x, y, w, h};
     SDL_RenderFillRect(renderer, &Rect);
     SDL_RenderPresent(renderer);
@@ -307,23 +308,30 @@ void clear_renderer(int x,int y,int w,int h)
 
 // render--------
 void render() {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-  clear_renderer(0,48,1285,725);
+   // SDL_SetRenderDrawColor(renderer, 124, 179, 66, 255);
+    //SDL_RenderClear(renderer);
+  clear_renderer(0,48,1285,725,0,0,0);
 
-    SDL_SetRenderDrawColor(renderer, 255,255, 255, 255);
+    SDL_SetRenderDrawColor(renderer,156, 39, 176, 255);
 
     for (const auto& segment : snake) {
         SDL_Rect rect = { segment.x * cell_size, segment.y * cell_size, cell_size, cell_size };
         SDL_RenderFillRect(renderer, &rect);
     }
+    
+    SDL_SetRenderDrawColor(renderer,106, 27, 154, 255);
+    auto it = snake.begin();
+      SDL_Rect rect = { (*it).x * cell_size, (*it).y * cell_size, cell_size, cell_size };
+        SDL_RenderFillRect(renderer, &rect);
 
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    SDL_Rect foodRect = { food.x * cell_size, food.y * cell_size, cell_size, cell_size };
-    SDL_RenderFillRect(renderer, &foodRect);
+   // SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+   /// SDL_Rect foodRect = { food.x * cell_size, food.y * cell_size, cell_size, cell_size };
+  //  SDL_RenderFillRect(renderer, &foodRect);
+  img("image/naruto.png",food.x * cell_size, food.y * cell_size, cell_size+10, cell_size+10);
      SDL_RenderDrawLine( renderer,0, 47,1300, 47);
      if(score==next_score)
      { 
-   clear_renderer(610,0,100,40);
+   clear_renderer(610,0,100,40,0,0,0);
       drawText(scores, "zebulon/Zebulon Bold Italic.otf", 630, 5, 30, {255, 0, 0});
       next_score++;
      }
