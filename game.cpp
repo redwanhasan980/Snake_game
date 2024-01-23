@@ -12,6 +12,81 @@
 using namespace std;
 int main(int argc, char *argv[])
 {  if(score==0)
-    game();
+    game1();
+    if(score==20)
+    {   lv=2; 
+        start = false;
+    first = 0;
+    do_text=0;
+    direction = RIGHT;
+                snake.clear();
+     snake.push_back({ 0, 14});
+      snake.push_back({ -1, 14});
+    makeFood();
+     Mix_Pause(2);
+     next_score--;
+         while (gamerun)
+    {
+         input();
    
+    SDL_Delay(100); 
+
+   
+      if (first == 0 && start == false&&do_text==0)
+        {     Mix_Resume(3);
+              
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+            SDL_RenderClear(renderer);
+            img("image/sad.jpg",0,0,1280,720);
+           // drawText("SNAKE PRO", "zebulon/Zebulon Bold Italic.otf", 50, 80, 90, {255, 0, 0});
+        drawText("Tale of Sadness", "font/SpaceMission.otf", 30, 120, 75, {255,0,0});
+         drawText("LEVEL 2 ", "zebulon/Zebulon Bold Italic.otf", 730, 20, 75, {255,0,0});
+          
+            drawText("To Start press F", "font/GothamMedium.ttf", 730, 120, 50, {255, 255, 255});
+            drawText("To Quit press ESC", "font/GothamMedium.ttf", 730, 200, 50, {255, 255, 255});
+            drawText("REDO GAMING", "font/SerpentineBoldItalic.ttf", 850, 600, 40, {255, 0, 0});
+            drawText("©2023 REDO GAMING. All rights reserved.", "font/GothamMedium.ttf", 850, 650, 15, {255, 255, 255});
+            SDL_RenderPresent(renderer);
+            do_text=1;
+           
+        }
+        else if(do_text==1&&start == false&&gameover==false)
+        {
+            SDL_RenderPresent(renderer);
+        }
+       else if (start == true)
+        { Mix_Pause(2);
+           update_snake();
+           update2();
+         calcscore();
+          
+         level2();
+        }
+        else if (start == false&&gameover==true&&do_text==0)
+        {     
+                 check_high_score();
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); 
+                SDL_RenderClear(renderer);
+                drawText("GAME OVER", "zebulon/Zebulon Bold Italic.otf", 220, 100, 100, {255, 0, 0});
+                drawText("SCORE : ", "font/GothamMedium.ttf", 400, 250, 65, {255, 255, 255});
+               
+               drawText(scores,"zebulon/Zebulon Bold Italic.otf", 710, 225, 80, {255, 0, 0});
+
+                 drawText("To restart press r", "font/GothamMedium.ttf", 400, 350, 50, {255, 255, 255});
+                drawText("To Quit press ESC", "font/GothamMedium.ttf", 400, 450, 50, {255, 255, 255});
+                drawText("REDO GAMING", "font/SerpentineBoldItalic.ttf", 800, 600, 40, {255, 0, 0});
+                drawText("©2023 REDO GAMING. All rights reserved.", "font/GothamMedium.ttf", 800, 650, 15, {255, 255, 255});
+                drawText("Developed by: Redwan Hasan", "font/GothamMedium.ttf", 800, 680, 20, {255, 255, 255});
+                SDL_RenderPresent(renderer);
+               do_text =1;
+            
+        
+        }
+        else
+        SDL_RenderPresent(renderer);
+         
+    }
+    }
+   
+    destroyWindow();
 }

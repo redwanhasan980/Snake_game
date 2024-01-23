@@ -1,1 +1,2 @@
- clear_renderer(0,48,1285,725);
+
+           // drawText("SNAKE PRO", "zebulon/Zebulon Bold Italic.otf", 50, 80, 90, {255, 0, 

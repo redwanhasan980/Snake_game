@@ -25,6 +25,7 @@ int high_score;
 int bonus=7;
 bool bfood=0;
 int tb=0;
+int lv=1;
 SDL_Window *window = nullptr;
 SDL_Renderer *renderer = nullptr;
 SDL_Texture *textTexture;
@@ -114,10 +115,13 @@ bool initializeWindow(void)
 
      Mix_Chunk *intro = Mix_LoadWAV("music/intro.mp3");
      Mix_Chunk *level1 = Mix_LoadWAV("music/level1.mp3");
+       Mix_Chunk *level2 = Mix_LoadWAV("music/naruto_epic.mp3");
      Mix_PlayChannel(1, intro, 0);
       Mix_Pause(1);
        Mix_PlayChannel(2,level1, 5);
       Mix_Pause(2);
+        Mix_PlayChannel(3,level2, 0);
+      Mix_Pause(3);
    int imgFlags = IMG_INIT_PNG;
     if ((IMG_Init(imgFlags) & imgFlags) != imgFlags) {
         std::cerr << "SDL_image could not initialize! SDL_image Error: " << IMG_GetError() << std::endl;
@@ -237,8 +241,17 @@ void input(void)
      snake.push_back({ 0, 14});
       snake.push_back({ -1, 14});
     makeFood();
-    score=0;
+    if(lv==1)
+    {
+      score=0;
     next_score=0;
+    }
+    else if(lv==2)
+    {
+        score=20;
+    next_score=20;
+    }
+  
 
                    
              }
@@ -432,8 +445,73 @@ void destroyWindow(void)
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
+void update2()
+{
+     if(( snake[0].x==25 ||snake[0].y==13))
+     {
+         start=false;
+       gameover=true;
+     }
+     if(food.x==25||food.y==13)
+      makeFood();
+      if(bfood==1&&(bonusfood.x==25||bonusfood.y==13))
+       bonus_Food();
+}
+void level2()
+{
+     clear_renderer(0,48,1285,725,85, 139, 47);
 
-void game()
+    SDL_SetRenderDrawColor(renderer,121, 85, 72, 255);
+
+    for (const auto& segment : snake) {
+        SDL_Rect rect = { segment.x * cell_size, segment.y * cell_size, cell_size, cell_size };
+        SDL_RenderFillRect(renderer, &rect);
+    }
+    
+    SDL_SetRenderDrawColor(renderer,62, 39, 35, 255);
+    auto it = snake.begin();
+      SDL_Rect rect = { (*it).x * cell_size, (*it).y * cell_size, cell_size, cell_size };
+        SDL_RenderFillRect(renderer, &rect);
+       
+         SDL_SetRenderDrawColor(renderer,96, 125, 139, 255);
+SDL_Rect roct = { 25* cell_size, 2*cell_size, cell_size, cell_size *28};
+        SDL_RenderFillRect(renderer, &roct);
+        SDL_Rect rct = {0, 13*cell_size, cell_size*53, cell_size };
+        SDL_RenderFillRect(renderer, &rct);
+        
+
+   // SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+   /// SDL_Rect foodRect = { food.x * cell_size, food.y * cell_size, cell_size, cell_size };
+  //  SDL_RenderFillRect(renderer, &foodRect);
+  img("image/naruto.png",food.x * cell_size, food.y * cell_size, cell_size+10, cell_size+10);
+
+   SDL_SetRenderDrawColor(renderer,255, 0, 0, 255);
+     SDL_RenderDrawLine( renderer,0, 47,1300, 47);
+     if(score==next_score)
+     { drawText("Score : ", "zebulon/Zebulon Bold Italic.otf", 950, 5, 30, {255, 0, 0});
+      clear_renderer(1120,0,100,40,0,0,0);
+      drawText(scores, "zebulon/Zebulon Bold Italic.otf", 1140, 5, 30, {255, 0, 0});
+      drawText("Level 2", "zebulon/Zebulon Bold Italic.otf", 50, 5, 30, {255, 0, 0});
+      next_score++;
+     }
+     if(bfood==1&&tb<80)
+     {  if(tb>10)
+        img("image/gamakichi.png",bonusfood.x * cell_size, bonusfood.y * cell_size, cell_size+30, cell_size+30);
+        tb++;
+        cout<<tb<<endl;
+     }
+     else
+     {
+     tb=0;
+     bfood=0;
+     }
+     
+     
+    SDL_RenderPresent(renderer);
+    SDL_Delay(10);
+}
+
+void game1()
 {
 
 
@@ -507,6 +585,5 @@ void game()
     }
    
 
-    destroyWindow();
-    
+
 }
