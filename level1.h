@@ -7,6 +7,7 @@
 #include <ctime>
 #include <fstream>
 #include <SDL2/SDL_image.h>
+#include"score.h"
 using namespace std;
 //-----vvvaaaarrriiaaaabbllleesssss-----
 int SCREEN_WIDTH = 1280;
@@ -21,6 +22,9 @@ int  t1 = 0,t2=0;
 int first = 0;
 int event_time=0;
 int high_score;
+int bonus=7;
+bool bfood=0;
+int tb=0;
 SDL_Window *window = nullptr;
 SDL_Renderer *renderer = nullptr;
 SDL_Texture *textTexture;
@@ -32,7 +36,7 @@ TTF_Font *font;
   
    bool maingame=false;
 bool gamerun = false;
-int score=0,next_score=0;
+int score,next_score;
 SDL_Color color;
   char scores[]={'\0'};
   char high_scores[]={'\0'};
@@ -48,6 +52,7 @@ struct SnakeSegment {
     Direction direction;
     vector<SnakeSegment> snake;
     SnakeSegment food;
+    SnakeSegment bonusfood;
 ///-------mmmaaaakkkkkinnnnng fooooooooooooood----------
 void makeFood() {
   
@@ -55,6 +60,14 @@ void makeFood() {
     food.y =rand() % 27;
     while( food.y<=1)
      food.y =rand() % 27;
+}
+
+void bonus_Food() {
+  bfood=1;
+    bonusfood.x =rand() % cell_num;
+    bonusfood.y =rand() % 27;
+    while( bonusfood.y<=1)
+     bonusfood.y =rand() % 27;
 }
 
 // initialization----------------------
@@ -99,15 +112,12 @@ bool initializeWindow(void)
         return false;
     }
 
-     Mix_Chunk *sound = Mix_LoadWAV("music/intro.mp3");
-    if (sound == nullptr) {
-       std::cerr << "Failed to load sound file! SDL_mixer Error: " << Mix_GetError() << std::endl;
-        Mix_CloseAudio();
-        SDL_Quit();
-        return false;
-    }
-     Mix_PlayChannel(1, sound, 0);
+     Mix_Chunk *intro = Mix_LoadWAV("music/intro.mp3");
+     Mix_Chunk *level1 = Mix_LoadWAV("music/level1.mp3");
+     Mix_PlayChannel(1, intro, 0);
       Mix_Pause(1);
+       Mix_PlayChannel(2,level1, 5);
+      Mix_Pause(2);
    int imgFlags = IMG_INIT_PNG;
     if ((IMG_Init(imgFlags) & imgFlags) != imgFlags) {
         std::cerr << "SDL_image could not initialize! SDL_image Error: " << IMG_GetError() << std::endl;
@@ -123,7 +133,12 @@ bool initializeWindow(void)
     SDL_RenderClear(renderer);
     return true;
 }
-
+//music
+void music(char s[])
+{
+   Mix_Chunk *effect = Mix_LoadWAV(s);
+  Mix_PlayChannel(1,effect, 0);
+}
 ///image load----------
 void img(char img_path[],int x,int y,int w,int h)
 {
@@ -206,6 +221,7 @@ void input(void)
                     start = true,do_text=0;
                     first=1;
                    Mix_Pause(1);
+                   Mix_Resume(2);
                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
             SDL_RenderClear(renderer);
             SDL_RenderPresent(renderer);
@@ -284,11 +300,25 @@ void update_snake() {
     if (newHead.x == food.x && newHead.y == food.y) {
         makeFood();
         score++;
+        music("music/dis.mp3");
+    }
+    else if(((newHead.x== bonusfood.x)||(newHead.x-1 == bonusfood.x)) &&( (newHead.y == bonusfood.y)||(newHead.y-1 == bonusfood.y))&&tb<80&&bfood==1)
+    {
+       score+=3;
+       next_score+=2;
+        music("music/dis.mp3");
+        bfood=0;
+        tb=0;
     }
     else {
         snake.pop_back();
     }
- 
+    if(score==bonus)
+    {     music("music/bonus.mp3");
+         bonus_Food();
+         bonus+=7;
+
+    }
     if (measure_collision()) {
        
        start=false;
@@ -310,7 +340,7 @@ void clear_renderer(int x,int y,int w,int h,int r,int g,int b)
 void render() {
    // SDL_SetRenderDrawColor(renderer, 124, 179, 66, 255);
     //SDL_RenderClear(renderer);
-  clear_renderer(0,48,1285,725,0,0,0);
+  clear_renderer(0,48,1285,725,85, 139, 47);
 
     SDL_SetRenderDrawColor(renderer,156, 39, 176, 255);
 
@@ -328,15 +358,31 @@ void render() {
    /// SDL_Rect foodRect = { food.x * cell_size, food.y * cell_size, cell_size, cell_size };
   //  SDL_RenderFillRect(renderer, &foodRect);
   img("image/naruto.png",food.x * cell_size, food.y * cell_size, cell_size+10, cell_size+10);
+
+   SDL_SetRenderDrawColor(renderer,255, 0, 0, 255);
      SDL_RenderDrawLine( renderer,0, 47,1300, 47);
      if(score==next_score)
-     { 
-   clear_renderer(610,0,100,40,0,0,0);
-      drawText(scores, "zebulon/Zebulon Bold Italic.otf", 630, 5, 30, {255, 0, 0});
+     { drawText("Score : ", "zebulon/Zebulon Bold Italic.otf", 950, 5, 30, {255, 0, 0});
+      clear_renderer(1120,0,100,40,0,0,0);
+      drawText(scores, "zebulon/Zebulon Bold Italic.otf", 1140, 5, 30, {255, 0, 0});
+      drawText("Level 1", "zebulon/Zebulon Bold Italic.otf", 50, 5, 30, {255, 0, 0});
       next_score++;
      }
+     if(bfood==1&&tb<80)
+     {  if(tb>10)
+        img("image/gamakichi.png",bonusfood.x * cell_size, bonusfood.y * cell_size, cell_size+30, cell_size+30);
+        tb++;
+        cout<<tb<<endl;
+     }
+     else
+     {
+     tb=0;
+     bfood=0;
+     }
+     
      
     SDL_RenderPresent(renderer);
+    SDL_Delay(10);
 }
 // calculation of score
 void calcscore()
@@ -387,7 +433,7 @@ void destroyWindow(void)
     SDL_Quit();
 }
 
-int main(int argc, char *argv[])
+void game()
 {
 
 
@@ -432,6 +478,8 @@ int main(int argc, char *argv[])
          update_snake();
          calcscore();
           render();
+          if(score==20)
+           break;
         }
         else if (start == false&&gameover==true&&do_text==0)
         {     
@@ -460,5 +508,5 @@ int main(int argc, char *argv[])
    
 
     destroyWindow();
-    return 0;
+    
 }
