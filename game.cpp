@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
         update2();
         calcscore();
         level2();
-        if (score == 25)
+        if (score == 20)
           break;
       }
       else if (start == false && gameover == true && do_text == 0)
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
   }
 
   // level 3333333333
-  if (score == 25)
+  if (score == 20)
   { Mix_Resume(4);
     lv = 3;
     character.x = 25;
@@ -95,7 +95,6 @@ int main(int argc, char *argv[])
         rasen = 0;
       if (charge < 100)
         charge += 2;
-      cout << score << endl;
       Mix_Pause(2);
       direction = STOP;
       input();

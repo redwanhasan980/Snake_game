@@ -232,6 +232,27 @@ void input(void)
                     direction = RIGHT;
 
                 break;
+
+            case SDLK_w:
+                if (direction != DOWN)
+
+                    direction = UP;
+                break;
+            case SDLK_s:
+                if (direction != UP)
+                    direction = DOWN;
+
+                break;
+            case SDLK_a:
+                if (direction != RIGHT)
+                    direction = LEFT;
+
+                break;
+            case SDLK_d:
+                if (direction != LEFT)
+                    direction = RIGHT;
+
+                break;
             }
         }
         if (event.type == SDL_KEYUP)
@@ -270,10 +291,11 @@ void input(void)
                 }
                 else if(lv==3)
                 {     charge=0;
-                    score = 25;
-                    next_score = 25;
+                    score = 20;
+                    next_score = 20;
                       character.x = 25;
                       character.y = 13;
+                      
                 for(int i=0;i<6;i++)
                 {
 
@@ -455,7 +477,7 @@ void render()
         if (tb > 10)
             img("image/gamakichi.png", bonusfood.x * cell_size, bonusfood.y * cell_size, cell_size + 30, cell_size + 30);
         tb++;
-        cout << tb << endl;
+        
     }
     else
     {
@@ -494,7 +516,7 @@ void check_high_score()
 
     int temp_high_score = 0;
     inputFile >> temp_high_score;
-    cout << temp_high_score;
+    
     if (score >= temp_high_score)
     {
         temp_high_score = score;
@@ -570,7 +592,7 @@ void level2()
         if (tb > 10)
             img("image/gamakichi.png", bonusfood.x * cell_size, bonusfood.y * cell_size, cell_size + 30, cell_size + 30);
         tb++;
-        cout << tb << endl;
+       
     }
     else
     {
@@ -685,7 +707,7 @@ void distroy_snake()
 {
     if (rasen == 1 && charge == 100)
     {
-        cout << "Yes";
+      
         for (int k = 0; k < 100; k++)
         {
             for (int i = 0; i < 6; i++)
@@ -695,7 +717,7 @@ void distroy_snake()
 
                 {   score++;
                 next_score++;
-                    cout << i << endl;
+                  
                     int d;
                     int x;
                     int y;
@@ -773,7 +795,7 @@ void level3rander()
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     SDL_RenderDrawLine(renderer, 0, 47, 1300, 47);
     if (score == next_score)
-    {  cout<<"ssss";
+    { 
         drawText("Score : ", "zebulon/Zebulon Bold Italic.otf", 950, 5, 30, {255, 0, 0});
 
         clear_renderer(1120, 0, 100, 40, 0, 0, 0);
